@@ -92,7 +92,7 @@ html, body {
 }
 
 .hud-pill {
-  background: rgba(8, 8, 10, 0.8);
+  background: rgba(8, 8, 10, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.24);
   color: #e6e8eb;
   padding: 6px 11px;
@@ -158,7 +158,7 @@ html, body {
 .modal-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(3, 3, 5, 0.9);
+  background: rgba(3, 3, 5, 0.92);
   backdrop-filter: blur(6px);
   display: flex;
   flex-direction: column;
@@ -178,38 +178,49 @@ html, body {
 
 .modal-card {
   width: 100%;
-  max-width: 700px;
-  max-height: 88vh;
+  max-width: 720px;
+  max-height: 90vh;
   overflow-y: auto;
   background: rgba(12, 13, 16, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 24px 28px;
+  padding: 22px 26px;
   text-align: center;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.95);
 }
 
 .menu-logo {
-  width: 84px;
-  height: 84px;
-  margin-bottom: 10px;
+  width: 76px;
+  height: 76px;
+  margin-bottom: 8px;
   border-radius: 14px;
   box-shadow: 0 0 22px rgba(255, 255, 255, 0.2);
 }
 
 .modal-title {
-  font-size: 30px;
+  font-size: 28px;
   letter-spacing: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: #ffffff;
   text-shadow: 0 0 18px rgba(255, 255, 255, 0.55);
 }
 
 .modal-subtitle {
-  font-size: 12px;
-  letter-spacing: 2.5px;
+  font-size: 11px;
+  letter-spacing: 2px;
   color: #9aa0a6;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   text-transform: uppercase;
+}
+
+.controls-hint {
+  font-size: 10px;
+  line-height: 1.6;
+  color: #b4bac2;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  letter-spacing: 0.8px;
 }
 
 .menu-actions {
@@ -217,15 +228,15 @@ html, body {
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .chapter-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
   gap: 8px;
-  margin-top: 12px;
-  max-height: 40vh;
+  margin-top: 10px;
+  max-height: 36vh;
   overflow-y: auto;
   padding: 4px;
 }

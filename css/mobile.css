@@ -13,48 +13,62 @@
 
 .touch-cluster {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   pointer-events: auto;
 }
 
 .touch-pad {
-  width: 64px;
-  height: 64px;
+  width: 62px;
+  height: 62px;
   border-radius: 50%;
-  background: rgba(15, 16, 20, 0.62);
-  border: 1.5px solid rgba(255, 255, 255, 0.38);
-  color: rgba(255, 255, 255, 0.9);
+  background: rgba(15, 16, 20, 0.64);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.92);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: bold;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   cursor: pointer;
   backdrop-filter: blur(3px);
-  box-shadow: 0 0 16px rgba(0, 0, 0, 0.68);
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.72);
   transition: transform 0.08s, background 0.08s, border-color 0.08s;
 }
 
 .touch-pad span.icon {
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1;
   margin-bottom: 2px;
 }
 
 .touch-pad.pressed {
-  background: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.36);
   border-color: #ffffff;
   transform: scale(0.93);
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.48);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.52);
+}
+
+/* Highlight DROP button when player is holding a rope */
+#pad-drop {
+  opacity: 0.72;
+}
+#pad-drop.rope-active {
+  opacity: 1;
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.55);
 }
 
 @media (max-width: 640px) {
   .touch-pad {
-    width: 56px;
-    height: 56px;
-    font-size: 9px;
+    width: 52px;
+    height: 52px;
+    font-size: 8.5px;
+  }
+  .touch-cluster {
+    gap: 8px;
   }
   .hud-pill {
     font-size: 10px;
@@ -65,7 +79,7 @@
     padding: 5px 8px;
   }
   .modal-title {
-    font-size: 21px;
+    font-size: 20px;
     letter-spacing: 4px;
   }
   #toast-banner {
