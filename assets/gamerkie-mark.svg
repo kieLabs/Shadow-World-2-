@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <radialGradient id="mistBg" cx="50%" cy="46%" r="54%">
+      <stop offset="0%" stop-color="#3a3f47"/>
+      <stop offset="45%" stop-color="#181b20"/>
+      <stop offset="78%" stop-color="#07080a"/>
+      <stop offset="100%" stop-color="#020203"/>
+    </radialGradient>
+    <linearGradient id="lightBeam" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.38"/>
+      <stop offset="55%" stop-color="#dfe4eb" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="numGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="65%" stop-color="#b8c0cc"/>
+      <stop offset="100%" stop-color="#454a54"/>
+    </linearGradient>
+    <filter id="limboGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur1"/>
+      <feMerge>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="800" height="800" rx="90" fill="#030304"/>
+  <circle cx="400" cy="390" r="340" fill="url(#mistBg)"/>
+  <polygon points="335,55 465,55 545,620 255,620" fill="url(#lightBeam)"/>
+  <g transform="translate(400, 380)">
+    <circle cx="0" cy="0" r="285" fill="#050608" stroke="rgba(255,255,255,0.45)" stroke-width="5"/>
+    <circle cx="0" cy="0" r="256" fill="none" stroke="#1d2026" stroke-width="18" stroke-dasharray="34 18"/>
+  </g>
+  <g stroke="#020203" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M 165,160 L 95,245 L 155,395" stroke-width="16"/>
+    <path d="M 635,160 L 705,245 L 645,395" stroke-width="16"/>
+  </g>
+  <ellipse cx="400" cy="118" rx="52" ry="28" fill="#020203" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+  <path d="M 325,245 C 325,185 475,185 475,260 C 475,315 395,355 335,425 L 480,425 L 480,455 L 305,455 L 305,425 C 365,350 440,308 440,260 C 440,218 360,218 355,255 Z"
+        fill="url(#numGrad)" stroke="#ffffff" stroke-width="1.5" filter="url(#limboGlow)"/>
+  <path d="M 165,540 Q 400,515 635,540 L 600,635 L 200,635 Z" fill="#020203"/>
+  <g transform="translate(400, 488)">
+    <circle cx="0" cy="-24" r="21" fill="#010102"/>
+    <circle cx="4" cy="-24" r="3.8" fill="#ffffff" filter="url(#limboGlow)"/>
+    <circle cx="14" cy="-23.5" r="3.3" fill="#ffffff" filter="url(#limboGlow)"/>
+  </g>
+  <text x="400" y="690" text-anchor="middle" fill="#ffffff" font-family="Courier New, monospace" font-size="48" font-weight="bold" letter-spacing="10" filter="url(#limboGlow)">SHADOW WORLD 2</text>
+</svg>
