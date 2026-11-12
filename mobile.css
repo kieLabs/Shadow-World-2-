@@ -1,0 +1,76 @@
+/* Mobile & Touch Controls */
+#touch-controls {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  z-index: 16;
+  pointer-events: none;
+}
+
+.touch-cluster {
+  display: flex;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.touch-pad {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(15, 16, 20, 0.62);
+  border: 1.5px solid rgba(255, 255, 255, 0.38);
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  backdrop-filter: blur(3px);
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.68);
+  transition: transform 0.08s, background 0.08s, border-color 0.08s;
+}
+
+.touch-pad span.icon {
+  font-size: 18px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.touch-pad.pressed {
+  background: rgba(255, 255, 255, 0.34);
+  border-color: #ffffff;
+  transform: scale(0.93);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.48);
+}
+
+@media (max-width: 640px) {
+  .touch-pad {
+    width: 56px;
+    height: 56px;
+    font-size: 9px;
+  }
+  .hud-pill {
+    font-size: 10px;
+    padding: 4px 7px;
+  }
+  .hud-btn {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
+  .modal-title {
+    font-size: 21px;
+    letter-spacing: 4px;
+  }
+  #toast-banner {
+    font-size: 10px;
+    padding: 6px 12px;
+    top: 84px;
+  }
+}
