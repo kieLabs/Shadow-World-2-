@@ -1,7 +1,7 @@
 {
   "name": "shadow-world-2",
-  "version": "2.0.0",
-  "description": "Shadow World 2 - 40-Chapter LIMBO-style monochrome silhouette platformer for GamerKie",
+  "version": "2.1.0",
+  "description": "Shadow World 2 - 40-Chapter LIMBO-style monochrome silhouette platformer (All 40 Levels & Rope Physics Audited)",
   "main": "js/main.js",
   "scripts": {
     "test": "node tests/core.test.js && node tests/world.test.js && node tests/player.test.js && node tests/input.test.js && node tests/canvas-utils.test.js && node tests/renderer.test.js"

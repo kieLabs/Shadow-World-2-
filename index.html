@@ -37,12 +37,16 @@
     <div class="modal-overlay" id="modal-menu">
       <div class="modal-card">
         <img src="assets/images/gamerkie-mark.svg" alt="Shadow World 2 Logo" class="menu-logo">
-        <div class="modal-title">SHADOW WORLD 2</div>
-        <div class="modal-subtitle">40 LETHAL CHAPTERS • PROCEDURAL IK &amp; HORROR AUDIO</div>
+        <div class="modal-title" id="modal-heading">SHADOW WORLD 2</div>
+        <div class="modal-subtitle" id="modal-sub">40 LETHAL CHAPTERS • PROCEDURAL IK &amp; HORROR AUDIO</div>
         <div class="menu-actions">
           <button class="hud-btn primary-btn" id="btn-resume" type="button">▶ RESUME JOURNEY</button>
           <button class="hud-btn" id="btn-restart-ch" type="button">↻ RESTART CHAPTER</button>
           <button class="hud-btn" id="btn-toggle-gesture" type="button">🖐 TOUCH: BUTTONS + SWIPE</button>
+        </div>
+        <div class="controls-hint">
+          PC: [A/D / ◀▶] MOVE • [W / SPACE / ▲] JUMP / RELEASE ROPE • [E / SHIFT] GRAB • [S / ▼] DROP ROPE<br>
+          MOBILE: HOLD [GRAB] TO DRAG TRAPS &amp; CRATES • TAP [JUMP] OR [▼ DROP] TO RELEASE ROPE
         </div>
         <div class="modal-subtitle" style="margin-bottom:8px;">SELECT CHAPTER (1–40 CONTINUOUS WORLD)</div>
         <div class="chapter-grid" id="chapter-list"></div>
@@ -60,6 +64,9 @@
         </button>
       </div>
       <div class="touch-cluster">
+        <button class="touch-pad" id="pad-drop" type="button" aria-label="Drop or Release Rope">
+          <span class="icon">▼</span>DROP
+        </button>
         <button class="touch-pad" id="pad-action" type="button" aria-label="Grab or Pull">
           <span class="icon">✋</span>GRAB
         </button>
