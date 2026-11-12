@@ -39,7 +39,9 @@
     platforms: [],
     crates: [],
     bearTraps: [],
+    spikes: [],
     saws: [],
+    cogs: [],
     crushers: [],
     ropes: [],
     spiders: [],
@@ -51,17 +53,21 @@
     electricSigns: [],
     turrets: [],
     gravitySwitches: [],
+    glassWalls: [],
     eggs: [],
     trees: [],
-    particles: [],
     time: 0,
+    finaleCompleted: false,
     toastCallback: null,
+    finaleCallback: null,
 
     buildWorld: function() {
       this.platforms = [];
       this.crates = [];
       this.bearTraps = [];
+      this.spikes = [];
       this.saws = [];
+      this.cogs = [];
       this.crushers = [];
       this.ropes = [];
       this.spiders = [];
@@ -73,8 +79,10 @@
       this.electricSigns = [];
       this.turrets = [];
       this.gravitySwitches = [];
+      this.glassWalls = [];
       this.eggs = [];
       this.trees = [];
+      this.finaleCompleted = false;
 
       const CL = SW.Config.CHAPTER_LENGTH;
       const rand = SW.Math.seededRandom(19842010);
@@ -89,6 +97,7 @@
         const bx = c * CL;
         const groundY = 420;
 
+        // Multi-plane parallax background silhouettes
         for (let t = 0; t < 11; t++) {
           this.trees.push({
             x: bx + t * 260 + rand() * 90,
@@ -98,52 +107,73 @@
           });
         }
 
+        // CHAPTER 40 FINALE: Shattering Glass Wall + Serene Glade + Final Egg
         if (chNum === 40) {
           this.platforms.push({ x: bx, y: groundY, w: CL, h: 240 });
-          this.eggs.push({ id: 40, ch: 40, x: bx + 950, y: groundY - 16, r: 10, collected: !!eggsFound[40], label: ACHIEVEMENT_CHAPTERS[40] });
+          this.glassWalls.push({ x: bx + 650, y: 120, w: 14, h: 300, shattered: false, shards: [] });
+          this.eggs.push({ id: 40, ch: 40, x: bx + 1150, y: groundY - 16, r: 10, collected: !!eggsFound[40], label: ACHIEVEMENT_CHAPTERS[40] });
           continue;
         }
 
+        // Entry Safe Checkpoint Ledge
         this.platforms.push({ x: bx, y: groundY, w: 460, h: 240 });
 
+        // SEGMENT 1 (bx + 460 to bx + 1240): Reachable Swinging Rope, Ferry Boat, or Bear Trap Corridor
         if (chNum % 3 === 1) {
-          this.platforms.push({ x: bx + 780, y: groundY, w: 460, h: 240 });
+          // Chasm (bx+460 to bx+760 = 300px) with reachable swinging rope at bx+565 & spike floor below
+          this.platforms.push({ x: bx + 760, y: groundY, w: 480, h: 240 });
+          this.spikes.push({ x: bx + 470, y: groundY + 95, w: 280, h: 22 });
           this.crates.push({
-            x: bx + 310, y: groundY - 46, w: 46, h: 46,
-            minX: bx + 120, maxX: bx + 440, pullable: true, label: 'CART'
+            x: bx + 290, y: groundY - 46, w: 46, h: 46,
+            minX: bx + 120, maxX: bx + 414, pullable: true, label: 'CART'
           });
           this.ropes.push({
-            x: bx + 620, y: 80, length: 235, maxLength: 295,
-            angle: 0.25, angVel: 0, lengthens: (chNum > 20)
+            x: bx + 565, y: 75, length: 265, maxLength: 315,
+            angle: 0.32, angVel: 0, lengthens: (chNum > 20)
           });
           this.saws.push({
-            x: bx + 620, y: groundY + 35, r: 42,
-            baseX: bx + 620, rangeX: 110, speed: 2.2, angle: 0
+            x: bx + 610, y: groundY + 55, r: 38,
+            baseX: bx + 610, rangeX: 90, speed: 2.2, angle: 0
           });
         } else if (chNum % 3 === 2) {
-          this.platforms.push({ x: bx + 920, y: groundY, w: 340, h: 240 });
+          // Dark Lake Ferry Boat with synchronized signedVx carry
+          this.platforms.push({ x: bx + 920, y: groundY, w: 320, h: 240 });
           this.waterZones.push({ x: bx + 460, y: groundY - 10, w: 460, h: 220 });
           this.crates.push({
-            x: bx + 500, y: groundY - 36, w: 95, h: 32,
-            minX: bx + 465, maxX: bx + 810, pullable: true, floats: true, vx: 38, dir: 1
+            x: bx + 490, y: groundY - 34, w: 105, h: 30,
+            minX: bx + 465, maxX: bx + 805, pullable: true, floats: true, vx: 46, dir: 1, signedVx: 46
           });
         } else {
+          // Continuous Corridor with Paired Draggable Bear Traps
           this.platforms.push({ x: bx + 460, y: groundY, w: 780, h: 240 });
           this.bearTraps.push({
-            x: bx + 660, y: groundY - 16, w: 36, h: 16,
+            x: bx + 630, y: groundY - 16, w: 36, h: 16,
             snapped: false, pullable: true, minX: bx + 490, maxX: bx + 1100
           });
           this.bearTraps.push({
-            x: bx + 706, y: groundY - 16, w: 36, h: 16,
+            x: bx + 678, y: groundY - 16, w: 36, h: 16,
             snapped: false, pullable: true, minX: bx + 490, maxX: bx + 1100
           });
         }
 
+        // REACHABLE TWO-STEP SECRET EGG BRANCH (Guaranteed 100% jumpable from solid ground bx+1040..1240)
+        if (ACHIEVEMENT_CHAPTERS[chNum] && chNum !== 1 && chNum !== 40) {
+          this.platforms.push({ x: bx + 980, y: groundY - 72, w: 72, h: 14 });   // Step 1 (72px above ground)
+          this.platforms.push({ x: bx + 1085, y: groundY - 142, w: 95, h: 16 }); // Step 2 (70px above Step 1)
+          this.eggs.push({
+            id: chNum, ch: chNum, x: bx + 1132, y: groundY - 158,
+            r: 9, collected: !!eggsFound[chNum],
+            label: ACHIEVEMENT_CHAPTERS[chNum]
+          });
+        }
+
+        // SEGMENT 2 (bx + 1240 to bx + 2060): Act-Specific Signature LIMBO Setpieces
         this.platforms.push({ x: bx + 1240, y: groundY, w: 820, h: 240 });
 
         if (chNum <= 10) {
+          // ACT I: Giant Spider Boss & Draggable Bear Traps
           this.bearTraps.push({
-            x: bx + 1420, y: groundY - 16, w: 36, h: 16,
+            x: bx + 1410, y: groundY - 16, w: 36, h: 16,
             snapped: false, pullable: true, minX: bx + 1260, maxX: bx + 1950
           });
           if (chNum >= 5) {
@@ -159,41 +189,43 @@
             });
           }
         } else if (chNum <= 20) {
-          this.maggots.push({ x: bx + 1320, y: groundY - 140, active: true });
-          this.platforms.push({ x: bx + 1290, y: groundY - 155, w: 520, h: 18 });
-          this.lightBeams.push({ x: bx + 1780, y: 0, w: 58, h: groundY, flipDir: -1 });
-          this.lightBeams.push({ x: bx + 1260, y: 0, w: 58, h: groundY, flipDir: 1 });
-          this.munchers.push({ x: bx + 1890, y: groundY - 115, w: 42, h: 55 });
-          this.crushers.push({
-            x: bx + 1540, y: groundY - 210, baseY: groundY - 210, targetY: groundY - 42,
-            w: 74, h: 42, timer: 0, cycle: 2.1
-          });
+          // ACT II: Solvable Two-Tier Brainworm + Light Beam Reversal + Ceiling Muncher Puzzle
+          this.maggots.push({ x: bx + 1310, y: groundY - 130, active: true });
+          // Two-step climb to upper bridge (y=348 -> y=276)
+          this.platforms.push({ x: bx + 1470, y: groundY - 72, w: 85, h: 16 });
+          this.platforms.push({ x: bx + 1290, y: groundY - 144, w: 540, h: 18 });
+          // Beam A on ground turns player LEFT so they climb the steps; Beam B on upper deck turns player RIGHT into Muncher
+          this.lightBeams.push({ x: bx + 1670, y: groundY - 126, w: 56, h: 126, flipDir: -1 });
+          this.lightBeams.push({ x: bx + 1310, y: 80, w: 56, h: 196, flipDir: 1 });
+          // Ceiling Muncher positioned directly over upper bridge exit (y=205..255)
+          this.munchers.push({ x: bx + 1745, y: groundY - 215, w: 46, h: 48 });
           this.hunters.push({
-            x: bx + 1720, y: groundY - 44, w: 22, h: 44,
-            minX: bx + 1380, maxX: bx + 1960, vx: -95, alive: true
+            x: bx + 1880, y: groundY - 44, w: 22, h: 44,
+            minX: bx + 1720, maxX: bx + 2020, vx: -85, alive: true
           });
         } else if (chNum <= 30) {
+          // ACT III: Electrified HOTEL Sign (2.4s alternating cycle) + Giant Industrial Cogs
           const letters = ['H', 'O', 'T', 'E', 'L'];
           for (let l = 0; l < letters.length; l++) {
-            const lx = bx + 1340 + l * 105;
-            const ly = groundY - 95 - (l % 2) * 32;
-            this.platforms.push({ x: lx, y: ly, w: 72, h: 20 });
+            const lx = bx + 1310 + l * 98;
+            const ly = groundY - 75 - (l % 2) * 34;
+            this.platforms.push({ x: lx, y: ly, w: 68, h: 18 });
             this.electricSigns.push({
-              x: lx, y: ly - 6, w: 72, h: 28,
-              letter: letters[l], timer: l * 0.45, cycle: 3.0, electrified: false
+              x: lx, y: ly - 6, w: 68, h: 26,
+              letter: letters[l], timer: (l % 2) * 2.4, cycle: 2.4, electrified: false, warning: false
             });
           }
-          this.saws.push({
-            x: bx + 1580, y: groundY - 10, r: 44,
-            baseX: bx + 1580, rangeX: 220, speed: 3.1, angle: 0
+          this.cogs.push({
+            x: bx + 1900, y: groundY - 82, r: 78, angle: 0, speed: 1.45
           });
         } else {
+          // ACT IV: Gravity Inversion Corridor + Ceiling Track + Laser Turret
           this.platforms.push({ x: bx + 1240, y: 85, w: 820, h: 28 });
           this.gravitySwitches.push({ x: bx + 1310, y: groundY - 52, w: 28, h: 52, targetDir: -1 });
           this.gravitySwitches.push({ x: bx + 1940, y: 113, w: 28, h: 52, targetDir: 1 });
           this.saws.push({
-            x: bx + 1620, y: groundY - 12, r: 46,
-            baseX: bx + 1620, rangeX: 190, speed: 3.6, angle: 0
+            x: bx + 1620, y: groundY - 12, r: 44,
+            baseX: bx + 1620, rangeX: 185, speed: 3.4, angle: 0
           });
           this.saws.push({
             x: bx + 1620, y: 115, r: 34,
@@ -204,24 +236,16 @@
           });
         }
 
+        // SEGMENT 3 (bx + 2060 to bx + 2800): Final Chapter Gauntlet & Checkpoint Bridge
         this.platforms.push({ x: bx + 2060, y: groundY, w: 740, h: 240 });
         this.crushers.push({
           x: bx + 2260, y: groundY - 220, baseY: groundY - 220, targetY: groundY - 40,
-          w: 82, h: 40, timer: (chNum % 2) * 1.1, cycle: 1.85
+          w: 82, h: 40, timer: (chNum % 2) * 1.1, cycle: 1.95
         });
         this.saws.push({
           x: bx + 2520, y: groundY - 14, r: 38,
-          baseX: bx + 2520, rangeX: 135, speed: 2.9 + (chNum * 0.04), angle: 0
+          baseX: bx + 2520, rangeX: 135, speed: 2.8 + (chNum * 0.03), angle: 0
         });
-
-        if (ACHIEVEMENT_CHAPTERS[chNum] && chNum !== 1 && chNum !== 40) {
-          this.platforms.push({ x: bx + 980, y: groundY - 135, w: 110, h: 16 });
-          this.eggs.push({
-            id: chNum, ch: chNum, x: bx + 1035, y: groundY - 151,
-            r: 9, collected: !!eggsFound[chNum],
-            label: ACHIEVEMENT_CHAPTERS[chNum]
-          });
-        }
       }
     },
 
@@ -255,32 +279,56 @@
       const px = player.x;
       const activeRange = 1600;
 
+      // Update Floating Boats / Crates with signed velocity
       for (let i = 0; i < this.crates.length; i++) {
         const c = this.crates[i];
         if (c.floats && Math.abs(c.x - px) < activeRange) {
-          c.x += c.vx * c.dir * dt;
-          if (c.x >= c.maxX) { c.x = c.maxX; c.dir = -1; }
-          else if (c.x <= c.minX) { c.x = c.minX; c.dir = 1; }
+          c.signedVx = c.vx * c.dir;
+          c.x += c.signedVx * dt;
+          if (c.x >= c.maxX) { c.x = c.maxX; c.dir = -1; c.signedVx = -c.vx; }
+          else if (c.x <= c.minX) { c.x = c.minX; c.dir = 1; c.signedVx = c.vx; }
         }
       }
 
+      // Update Pendulum Ropes & Full-Segment Rope Grabbing (respecting ropeCooldown!)
       for (let i = 0; i < this.ropes.length; i++) {
         const r = this.ropes[i];
         if (Math.abs(r.x - px) > activeRange) continue;
         const gravAccel = -(SW.Config.GRAVITY / r.length) * Math.sin(r.angle);
         r.angVel += gravAccel * dt;
-        r.angVel *= 0.992;
+        r.angVel *= 0.994;
         r.angle += r.angVel * dt;
 
+        const midX = r.x + Math.sin(r.angle) * (r.length * 0.45);
+        const midY = r.y + Math.cos(r.angle) * (r.length * 0.45);
         const tipX = r.x + Math.sin(r.angle) * r.length;
         const tipY = r.y + Math.cos(r.angle) * r.length;
-        if (!player.dead && !player.attachedRope && player.vy !== 0) {
-          if (SW.Math.dist(player.x + player.w * 0.5, player.y + player.h * 0.5, tipX, tipY) < 34) {
+
+        if (!player.dead && !player.attachedRope && player.ropeCooldown <= 0 && !player.grounded) {
+          const pcx = player.x + player.w * 0.5;
+          const pcy = player.y + player.h * 0.5;
+          const d = SW.Math.pointToSegmentDist(pcx, pcy, midX, midY, tipX, tipY);
+          if (d < 30) {
+            const totalLen = Math.hypot(tipX - r.x, tipY - r.y) || 1;
+            const grabDist = Math.hypot(pcx - r.x, pcy - r.y);
+            player.ropeGrabRatio = SW.Math.clamp(grabDist / totalLen, 0.55, 0.98);
             player.attachedRope = r;
+            if (SW.Audio && SW.Audio.playRopeGrab) SW.Audio.playRopeGrab();
           }
         }
       }
 
+      // Update Spiked Pits
+      for (let i = 0; i < this.spikes.length; i++) {
+        const spk = this.spikes[i];
+        if (Math.abs(spk.x - px) > activeRange) continue;
+        if (!player.dead && SW.Math.aabb(player, spk)) {
+          if (SW.Audio && SW.Audio.playTrapSnap) SW.Audio.playTrapSnap();
+          player.kill('IMPALED ON STEEL SPIKES');
+        }
+      }
+
+      // Update Bear Traps
       for (let i = 0; i < this.bearTraps.length; i++) {
         const bt = this.bearTraps[i];
         if (bt.snapped || Math.abs(bt.x - px) > activeRange) continue;
@@ -292,6 +340,7 @@
         }
       }
 
+      // Update Spinning Buzzsaws
       for (let i = 0; i < this.saws.length; i++) {
         const s = this.saws[i];
         if (Math.abs(s.baseX - px) > activeRange) continue;
@@ -302,6 +351,17 @@
         }
       }
 
+      // Update Giant Rotating Industrial Cogs
+      for (let i = 0; i < this.cogs.length; i++) {
+        const cg = this.cogs[i];
+        if (Math.abs(cg.x - px) > activeRange) continue;
+        cg.angle += dt * cg.speed;
+        if (!player.dead && SW.Math.circleRect(cg.x, cg.y, cg.r - 8, player.x, player.y, player.w, player.h)) {
+          player.kill('CRUSHED IN THE GIANT COG');
+        }
+      }
+
+      // Update Hydraulic Crushers
       for (let i = 0; i < this.crushers.length; i++) {
         const cr = this.crushers[i];
         if (Math.abs(cr.x - px) > activeRange) continue;
@@ -326,6 +386,7 @@
         }
       }
 
+      // Update Procedural IK Giant Spiders
       for (let i = 0; i < this.spiders.length; i++) {
         const sp = this.spiders[i];
         if (sp.hp <= 0 || Math.abs(sp.x - px) > activeRange) continue;
@@ -359,6 +420,7 @@
         }
       }
 
+      // Update Tribal Blowgun Hunters
       for (let i = 0; i < this.hunters.length; i++) {
         const hu = this.hunters[i];
         if (!hu.alive || Math.abs(hu.x - px) > activeRange) continue;
@@ -370,6 +432,7 @@
         }
       }
 
+      // Update Brainworm Maggots, Light Beams & Ceiling Munchers
       for (let i = 0; i < this.maggots.length; i++) {
         const mg = this.maggots[i];
         if (!mg.active || Math.abs(mg.x - px) > activeRange) continue;
@@ -377,7 +440,7 @@
           mg.active = false;
           player.maggotAttached = true;
           player.maggotDir = 1;
-          if (this.toastCallback) this.toastCallback('BRAINWORM ATTACHED: ENTER LIGHT TO REVERSE');
+          if (this.toastCallback) this.toastCallback('BRAINWORM ATTACHED: USE LIGHT SHAFTS & UPPER MUNCHER');
         }
       }
       if (player.maggotAttached) {
@@ -398,6 +461,7 @@
         }
       }
 
+      // Update Water Zones
       for (let i = 0; i < this.waterZones.length; i++) {
         const wz = this.waterZones[i];
         if (Math.abs(wz.x - px) > activeRange) continue;
@@ -406,24 +470,27 @@
         }
       }
 
+      // Update Electrified HOTEL Signs (2.4s safe / 0.5s warning / 1.9s lethal shock)
       for (let i = 0; i < this.electricSigns.length; i++) {
         const es = this.electricSigns[i];
         if (Math.abs(es.x - px) > activeRange) continue;
         es.timer = (es.timer + dt) % (es.cycle * 2);
-        es.electrified = es.timer < es.cycle;
+        es.warning = (es.timer >= es.cycle - 0.5 && es.timer < es.cycle);
+        es.electrified = (es.timer >= es.cycle);
         if (!player.dead && es.electrified && SW.Math.aabb(player, es)) {
           if (SW.Audio && SW.Audio.playElectricArc) SW.Audio.playElectricArc();
           player.kill('ELECTROCUTED ON HOTEL SIGN');
         }
       }
 
+      // Update Machine Gun Turrets
       for (let i = 0; i < this.turrets.length; i++) {
         const tu = this.turrets[i];
         if (Math.abs(tu.x - px) > activeRange) continue;
         const inSight = (px < tu.x && px > tu.x - tu.range && Math.abs(player.y - tu.y) < 38);
         if (inSight && !player.dead) {
           tu.lockTimer += dt;
-          if (tu.lockTimer > 0.52) {
+          if (tu.lockTimer > 0.65) {
             if (SW.Audio && SW.Audio.playTrapSnap) SW.Audio.playTrapSnap();
             player.kill('SHOT BY AUTOMATED TURRET');
           }
@@ -432,6 +499,7 @@
         }
       }
 
+      // Update Gravity Inversion Switches
       for (let i = 0; i < this.gravitySwitches.length; i++) {
         const gs = this.gravitySwitches[i];
         if (Math.abs(gs.x - px) > activeRange) continue;
@@ -445,6 +513,41 @@
         }
       }
 
+      // Update Chapter 40 Shattering Glass Wall & Finale Trigger
+      for (let i = 0; i < this.glassWalls.length; i++) {
+        const gw = this.glassWalls[i];
+        if (!gw.shattered && !player.dead && SW.Math.aabb(player, gw)) {
+          gw.shattered = true;
+          if (SW.Audio && SW.Audio.playGlassShatter) SW.Audio.playGlassShatter();
+          if (this.toastCallback) this.toastCallback('THE GLASS BARRIER SHATTERS...');
+          for (let s = 0; s < 28; s++) {
+            gw.shards.push({
+              x: gw.x + gw.w * 0.5,
+              y: player.y + (Math.random() - 0.5) * 90,
+              vx: 90 + Math.random() * 260,
+              vy: -140 + Math.random() * 280,
+              size: 4 + Math.random() * 7
+            });
+          }
+        }
+        if (gw.shattered) {
+          for (let s = 0; s < gw.shards.length; s++) {
+            const sh = gw.shards[s];
+            sh.vy += 420 * dt;
+            sh.x += sh.vx * dt;
+            sh.y += sh.vy * dt;
+          }
+        }
+      }
+
+      // Trigger Finale Completion at end of Chapter 40
+      const finaleX = 39 * SW.Config.CHAPTER_LENGTH + 1500;
+      if (!this.finaleCompleted && !player.dead && player.x >= finaleX) {
+        this.finaleCompleted = true;
+        if (this.finaleCallback) this.finaleCallback();
+      }
+
+      // Update Secret Eggs & Achievements
       for (let i = 0; i < this.eggs.length; i++) {
         const eg = this.eggs[i];
         if (eg.collected || Math.abs(eg.x - px) > activeRange) continue;

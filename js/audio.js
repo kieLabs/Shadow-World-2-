@@ -107,6 +107,9 @@
     playJump: function() {
       this.playTone(130, 290, 0.14, 'sine', 0.11);
     },
+    playRopeGrab: function() {
+      this.playTone(190, 110, 0.08, 'triangle', 0.1);
+    },
     playTrapSnap: function() {
       this.playTone(620, 48, 0.19, 'sawtooth', 0.28);
     },
@@ -118,6 +121,9 @@
     },
     playGravityFlip: function() {
       this.playTone(220, 440, 0.28, 'sine', 0.16);
+    },
+    playGlassShatter: function() {
+      this.playTone(1400, 180, 0.42, 'sawtooth', 0.24);
     },
     playEggFound: function() {
       this.playTone(520, 880, 0.45, 'sine', 0.18);

@@ -1,7 +1,7 @@
 (function(global) {
   'use strict';
   const SW = global.ShadowWorld2 = global.ShadowWorld = global.ShadowWorld2 || {};
-  const STORAGE_KEY = 'SHADOW_WORLD_2_LIMBO_40_SAVE_V1';
+  const STORAGE_KEY = 'SHADOW_WORLD_2_LIMBO_40_SAVE_V2';
 
   SW.Save = {
     state: {

@@ -19,6 +19,7 @@
       SW.Input.init();
       SW.Renderer.init();
       SW.World.toastCallback = this.showToast.bind(this);
+      SW.World.finaleCallback = this.onFinaleComplete.bind(this);
       SW.World.buildWorld();
 
       this.jumpToChapter(SW.Save.state.currentChapter);
@@ -33,6 +34,18 @@
 
       this.lastTime = performance.now();
       requestAnimationFrame(this.loop.bind(this));
+    },
+
+    onFinaleComplete: function() {
+      const deaths = SW.Save.state.deaths;
+      const heading = document.getElementById('modal-heading');
+      const sub = document.getElementById('modal-sub');
+      if (heading) heading.textContent = 'JOURNEY COMPLETE';
+      if (sub) {
+        const badge = deaths <= 5 ? ' • 🏆 ACHIEVEMENT: NO POINT IN DYING UNLOCKED!' : '';
+        sub.textContent = 'ALL 40 CHAPTERS SURVIVED • TOTAL DEATHS: ' + deaths + badge;
+      }
+      this.setModal(true);
     },
 
     jumpToChapter: function(chNum) {
@@ -77,6 +90,10 @@
         btn.className = 'chapter-btn' + (i === SW.Save.state.currentChapter ? ' current' : '');
         btn.textContent = SW.World.chapterTitles[i - 1];
         btn.addEventListener('click', function() {
+          const heading = document.getElementById('modal-heading');
+          const sub = document.getElementById('modal-sub');
+          if (heading) heading.textContent = 'SHADOW WORLD 2';
+          if (sub) sub.textContent = '40 LETHAL CHAPTERS • PROCEDURAL IK & HORROR AUDIO';
           self.jumpToChapter(i);
           self.setModal(false);
         });
@@ -151,6 +168,12 @@
       if (!this.paused) {
         SW.Player.update(dt, SW.World);
         SW.World.update(dt, SW.Player);
+
+        // Visually highlight DROP button whenever player is holding a rope
+        const dropBtn = document.getElementById('pad-drop');
+        if (dropBtn) {
+          dropBtn.classList.toggle('rope-active', !!SW.Player.attachedRope);
+        }
 
         if (!SW.Player.dead) {
           const currentCh = SW.Math.clamp(Math.floor(Math.max(0, SW.Player.x) / SW.Config.CHAPTER_LENGTH) + 1, 1, 40);

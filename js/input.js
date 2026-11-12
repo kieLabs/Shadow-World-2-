@@ -5,11 +5,14 @@
   SW.Input = {
     left: false,
     right: false,
+    up: false,
+    down: false,
     jump: false,
     jumpJustPressed: false,
+    dropJustPressed: false,
     action: false,
     keys: {},
-    touchButtons: { left: false, right: false, jump: false, action: false },
+    touchButtons: { left: false, right: false, jump: false, action: false, drop: false },
     gestureTouch: { active: false, id: null, startX: 0, startY: 0, moveLeft: false, moveRight: false },
 
     init: function() {
@@ -20,6 +23,9 @@
         self.keys[e.code] = true;
         if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
           if (!self.jump) self.jumpJustPressed = true;
+        }
+        if (e.code === 'ArrowDown' || e.code === 'KeyS') {
+          if (!self.down) self.dropJustPressed = true;
         }
         self.syncState();
       });
@@ -38,6 +44,9 @@
           if (prop === 'jump' && val && !self.touchButtons.jump) {
             self.jumpJustPressed = true;
           }
+          if (prop === 'drop' && val && !self.touchButtons.drop) {
+            self.dropJustPressed = true;
+          }
           self.touchButtons[prop] = val;
           el.classList.toggle('pressed', val);
           self.syncState();
@@ -52,6 +61,7 @@
       bindPad('pad-right', 'right');
       bindPad('pad-jump', 'jump');
       bindPad('pad-action', 'action');
+      bindPad('pad-drop', 'drop');
 
       const canvas = document.getElementById('game-canvas');
       if (canvas) {
@@ -69,8 +79,11 @@
           const dy = ev.clientY - self.gestureTouch.startY;
           self.gestureTouch.moveLeft = dx < -24;
           self.gestureTouch.moveRight = dx > 24;
-          if (dy < -42 && !self.jump) {
+          if (dy < -40) {
             self.jumpJustPressed = true;
+            self.gestureTouch.startY = ev.clientY;
+          } else if (dy > 42) {
+            self.dropJustPressed = true;
             self.gestureTouch.startY = ev.clientY;
           }
           self.syncState();
@@ -91,6 +104,8 @@
     syncState: function() {
       this.left = !!(this.keys.ArrowLeft || this.keys.KeyA || this.touchButtons.left || this.gestureTouch.moveLeft);
       this.right = !!(this.keys.ArrowRight || this.keys.KeyD || this.touchButtons.right || this.gestureTouch.moveRight);
+      this.up = !!(this.keys.ArrowUp || this.keys.KeyW);
+      this.down = !!(this.keys.ArrowDown || this.keys.KeyS || this.touchButtons.drop);
       this.jump = !!(this.keys.Space || this.keys.ArrowUp || this.keys.KeyW || this.touchButtons.jump);
       this.action = !!(this.keys.KeyE || this.keys.KeyX || this.keys.ShiftLeft || this.keys.ShiftRight || this.keys.ControlLeft || this.touchButtons.action);
     },
@@ -99,6 +114,12 @@
       const jp = this.jumpJustPressed;
       this.jumpJustPressed = false;
       return jp;
+    },
+
+    consumeDrop: function() {
+      const dp = this.dropJustPressed;
+      this.dropJustPressed = false;
+      return dp;
     }
   };
 

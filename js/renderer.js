@@ -69,6 +69,7 @@
       ctx.save();
       ctx.translate(-this.camX, 0);
 
+      // Overhead Volumetric Light Shafts
       for (let i = 0; i < world.lightBeams.length; i++) {
         const lb = world.lightBeams[i];
         if (lb.x + lb.w < this.camX - 100 || lb.x > this.camX + vw + 100) continue;
@@ -80,6 +81,7 @@
         ctx.fillRect(lb.x, lb.y, lb.w, lb.h);
       }
 
+      // Water Zones
       for (let i = 0; i < world.waterZones.length; i++) {
         const wz = world.waterZones[i];
         if (wz.x + wz.w < this.camX - 100 || wz.x > this.camX + vw + 100) continue;
@@ -93,6 +95,7 @@
         ctx.stroke();
       }
 
+      // Platforms
       ctx.fillStyle = '#030304';
       for (let i = 0; i < world.platforms.length; i++) {
         const p = world.platforms[i];
@@ -100,11 +103,31 @@
         ctx.fillRect(p.x, p.y, p.w, p.h);
       }
 
+      // Spiked Pits
+      for (let i = 0; i < world.spikes.length; i++) {
+        const spk = world.spikes[i];
+        if (spk.x + spk.w < this.camX - 100 || spk.x > this.camX + vw + 100) continue;
+        ctx.fillStyle = '#030304';
+        ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+        ctx.lineWidth = 1.2;
+        const step = 14;
+        for (let sx = spk.x; sx < spk.x + spk.w; sx += step) {
+          ctx.beginPath();
+          ctx.moveTo(sx, spk.y + spk.h);
+          ctx.lineTo(sx + step * 0.5, spk.y);
+          ctx.lineTo(sx + step, spk.y + spk.h);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
+
+      // Pullable Crates & Ferry Boats
       for (let i = 0; i < world.crates.length; i++) {
         const c = world.crates[i];
         if (c.x + c.w < this.camX - 100 || c.x > this.camX + vw + 100) continue;
         ctx.fillStyle = '#050506';
-        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+        ctx.strokeStyle = 'rgba(255,255,255,0.38)';
         ctx.lineWidth = 1.5;
         ctx.fillRect(c.x, c.y, c.w, c.h);
         ctx.strokeRect(c.x, c.y, c.w, c.h);
@@ -113,17 +136,27 @@
         ctx.stroke();
       }
 
-      ctx.strokeStyle = '#050507';
-      ctx.lineWidth = 3;
+      // Swinging Ropes & Knot Grip Indicator
       for (let i = 0; i < world.ropes.length; i++) {
         const r = world.ropes[i];
         if (Math.abs(r.x - this.camX) > vw + 200) continue;
+        const tipX = r.x + Math.sin(r.angle) * r.length;
+        const tipY = r.y + Math.cos(r.angle) * r.length;
+        ctx.strokeStyle = '#050507';
+        ctx.lineWidth = 3.5;
         ctx.beginPath();
         ctx.moveTo(r.x, r.y);
-        ctx.lineTo(r.x + Math.sin(r.angle) * r.length, r.y + Math.cos(r.angle) * r.length);
+        ctx.lineTo(tipX, tipY);
         ctx.stroke();
+
+        // Subtle glowing knot at bottom of rope for visual clarity
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        ctx.beginPath();
+        ctx.arc(tipX, tipY, 3.5, 0, Math.PI * 2);
+        ctx.fill();
       }
 
+      // Bear Traps
       for (let i = 0; i < world.bearTraps.length; i++) {
         const bt = world.bearTraps[i];
         if (Math.abs(bt.x - this.camX) > vw + 200) continue;
@@ -146,6 +179,7 @@
         ctx.stroke();
       }
 
+      // Spinning Serrated Buzzsaws
       for (let i = 0; i < world.saws.length; i++) {
         const s = world.saws[i];
         if (Math.abs(s.x - this.camX) > vw + 200) continue;
@@ -172,6 +206,32 @@
         ctx.restore();
       }
 
+      // Giant Rotating Industrial Cogs
+      for (let i = 0; i < world.cogs.length; i++) {
+        const cg = world.cogs[i];
+        if (Math.abs(cg.x - this.camX) > vw + 250) continue;
+        ctx.save();
+        ctx.translate(cg.x, cg.y);
+        ctx.rotate(cg.angle);
+        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+        ctx.fillStyle = '#040406';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, cg.r - 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        // Spokes
+        for (let spk = 0; spk < 6; spk++) {
+          const a = (spk * Math.PI) / 3;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(Math.cos(a) * (cg.r - 10), Math.sin(a) * (cg.r - 10));
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      // Hydraulic Crushers
       for (let i = 0; i < world.crushers.length; i++) {
         const cr = world.crushers[i];
         if (Math.abs(cr.x - this.camX) > vw + 200) continue;
@@ -182,6 +242,7 @@
         ctx.strokeRect(cr.x, cr.y, cr.w, cr.h);
       }
 
+      // Procedural 2D IK Giant Spiders
       for (let i = 0; i < world.spiders.length; i++) {
         const sp = world.spiders[i];
         if (sp.hp <= 0 || Math.abs(sp.x - this.camX) > vw + 300) continue;
@@ -216,6 +277,7 @@
         }
       }
 
+      // Tribal Blowgun Hunters
       for (let i = 0; i < world.hunters.length; i++) {
         const hu = world.hunters[i];
         if (!hu.alive || Math.abs(hu.x - this.camX) > vw + 200) continue;
@@ -228,6 +290,7 @@
         ctx.fillRect(hu.x + (hu.vx < 0 ? 3 : 14), hu.y + 7, 2.5, 2.5);
       }
 
+      // Brainworm Maggots & Ceiling Munchers
       for (let i = 0; i < world.maggots.length; i++) {
         const mg = world.maggots[i];
         if (!mg.active || Math.abs(mg.x - this.camX) > vw + 200) continue;
@@ -244,30 +307,45 @@
         if (Math.abs(mu.x - this.camX) > vw + 200) continue;
         ctx.fillStyle = '#040406';
         ctx.fillRect(mu.x, mu.y, mu.w, mu.h);
+        // Muncher tendrils
+        ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+        ctx.beginPath();
+        ctx.moveTo(mu.x + 12, mu.y + mu.h);
+        ctx.lineTo(mu.x + 12, mu.y + mu.h + 12);
+        ctx.moveTo(mu.x + 32, mu.y + mu.h);
+        ctx.lineTo(mu.x + 32, mu.y + mu.h + 12);
+        ctx.stroke();
       }
 
+      // Electrified HOTEL Signs with Pre-Shock Flicker Warning
       for (let i = 0; i < world.electricSigns.length; i++) {
         const es = world.electricSigns[i];
         if (Math.abs(es.x - this.camX) > vw + 200) continue;
         ctx.save();
         ctx.font = 'bold 20px Courier New';
-        ctx.fillStyle = es.electrified ? '#ffffff' : '#555960';
         if (es.electrified) {
+          ctx.fillStyle = '#ffffff';
           ctx.shadowColor = '#ffffff';
-          ctx.shadowBlur = 16;
+          ctx.shadowBlur = 18;
           ctx.strokeStyle = '#ffffff';
-          ctx.strokeRect(es.x, es.y + 6, es.w, 20);
+          ctx.lineWidth = 2;
+          ctx.strokeRect(es.x, es.y + 6, es.w, 18);
+        } else if (es.warning) {
+          ctx.fillStyle = (Math.floor(world.time * 24) % 2 === 0) ? '#ffffff' : '#6c7178';
+        } else {
+          ctx.fillStyle = '#555960';
         }
-        ctx.fillText(es.letter, es.x + 28, es.y + 2);
+        ctx.fillText(es.letter, es.x + 26, es.y + 2);
         ctx.restore();
       }
 
+      // Automated Turrets & Gravity Switches
       for (let i = 0; i < world.turrets.length; i++) {
         const tu = world.turrets[i];
         if (Math.abs(tu.x - this.camX) > vw + 450) continue;
         ctx.fillStyle = '#050507';
         ctx.fillRect(tu.x - 12, tu.y, 24, 38);
-        ctx.strokeStyle = tu.lockTimer > 0 ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.22)';
+        ctx.strokeStyle = tu.lockTimer > 0 ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.22)';
         ctx.lineWidth = tu.lockTimer > 0 ? 2.5 : 1;
         ctx.beginPath();
         ctx.moveTo(tu.x, tu.y + 10);
@@ -284,6 +362,26 @@
         ctx.fillText(gs.targetDir === -1 ? '↑' : '↓', gs.x + 8, gs.y + 30);
       }
 
+      // Chapter 40 Shattering Glass Wall
+      for (let i = 0; i < world.glassWalls.length; i++) {
+        const gw = world.glassWalls[i];
+        if (Math.abs(gw.x - this.camX) > vw + 300) continue;
+        if (!gw.shattered) {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.24)';
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.lineWidth = 2;
+          ctx.fillRect(gw.x, gw.y, gw.w, gw.h);
+          ctx.strokeRect(gw.x, gw.y, gw.w, gw.h);
+        } else {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+          for (let s = 0; s < gw.shards.length; s++) {
+            const sh = gw.shards[s];
+            ctx.fillRect(sh.x, sh.y, sh.size, sh.size * 0.6);
+          }
+        }
+      }
+
+      // Glowing Secret Eggs
       for (let i = 0; i < world.eggs.length; i++) {
         const eg = world.eggs[i];
         if (eg.collected || Math.abs(eg.x - this.camX) > vw + 200) continue;
@@ -297,6 +395,7 @@
         ctx.restore();
       }
 
+      // Foreground Protagonist Silhouette ("The Boy")
       if (player.dead) {
         ctx.fillStyle = '#030304';
         for (let i = 0; i < player.ragdollParts.length; i++) {

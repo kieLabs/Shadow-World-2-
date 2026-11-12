@@ -5,8 +5,8 @@
   SW.Config = {
     GAME_TITLE: 'SHADOW WORLD 2',
     GRAVITY: 980,
-    PLAYER_SPEED: 215,
-    PLAYER_JUMP: 430,
+    PLAYER_SPEED: 220,
+    PLAYER_JUMP: 445,
     MAX_DT: 0.033,
     TOTAL_CHAPTERS: 40,
     CHAPTER_LENGTH: 2800
@@ -16,6 +16,14 @@
     clamp: function(v, min, max) { return Math.max(min, Math.min(max, v)); },
     lerp: function(a, b, t) { return a + (b - a) * t; },
     dist: function(x1, y1, x2, y2) { return Math.hypot(x2 - x1, y2 - y1); },
+    pointToSegmentDist: function(px, py, x1, y1, x2, y2) {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const lenSq = dx * dx + dy * dy;
+      if (lenSq === 0) return Math.hypot(px - x1, py - y1);
+      const t = SW.Math.clamp(((px - x1) * dx + (py - y1) * dy) / lenSq, 0, 1);
+      return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+    },
     aabb: function(a, b) {
       return (
         a.x < b.x + b.w &&
