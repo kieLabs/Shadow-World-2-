@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#030304">
+  <title>SHADOW WORLD 2 — 40 Chapters | GamerKie Edition</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/gamerkie-mark.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+  <div id="game-root">
+    <canvas id="game-canvas"></canvas>
+    <div id="vignette-layer"></div>
+    <div id="grain-layer"></div>
+
+    <!-- Top Minimalist Monochrome HUD -->
+    <div id="hud-top">
+      <div class="hud-group">
+        <div class="hud-pill" id="hud-chapter">CH 1/40: AWAKENING</div>
+        <div class="hud-pill" id="hud-deaths">DEATHS: 0</div>
+        <div class="hud-pill" id="hud-eggs">EGGS: 0/13</div>
+      </div>
+      <div class="hud-group">
+        <button class="hud-btn" id="btn-pause" type="button">⏸ MENU</button>
+        <button class="hud-btn" id="btn-chapters" type="button">🗺 CHAPTERS</button>
+        <button class="hud-btn" id="btn-retry" type="button">↻ RETRY</button>
+        <button class="hud-btn" id="btn-audio" type="button">🔊 AUDIO: ON</button>
+        <button class="hud-btn" id="btn-fullscreen" type="button">⛶ FULL</button>
+      </div>
+    </div>
+
+    <div id="toast-banner">ACHIEVEMENT UNLOCKED</div>
+
+    <!-- Pause & 40-Chapter Select Modal -->
+    <div class="modal-overlay" id="modal-menu">
+      <div class="modal-card">
+        <img src="assets/images/gamerkie-mark.svg" alt="Shadow World 2 Logo" class="menu-logo">
+        <div class="modal-title">SHADOW WORLD 2</div>
+        <div class="modal-subtitle">40 LETHAL CHAPTERS • PROCEDURAL IK &amp; HORROR AUDIO</div>
+        <div class="menu-actions">
+          <button class="hud-btn primary-btn" id="btn-resume" type="button">▶ RESUME JOURNEY</button>
+          <button class="hud-btn" id="btn-restart-ch" type="button">↻ RESTART CHAPTER</button>
+          <button class="hud-btn" id="btn-toggle-gesture" type="button">🖐 TOUCH: BUTTONS + SWIPE</button>
+        </div>
+        <div class="modal-subtitle" style="margin-bottom:8px;">SELECT CHAPTER (1–40 CONTINUOUS WORLD)</div>
+        <div class="chapter-grid" id="chapter-list"></div>
+      </div>
+    </div>
+
+    <!-- Responsive Multi-Touch Controls -->
+    <div id="touch-controls">
+      <div class="touch-cluster">
+        <button class="touch-pad" id="pad-left" type="button" aria-label="Move Left">
+          <span class="icon">◀</span>LEFT
+        </button>
+        <button class="touch-pad" id="pad-right" type="button" aria-label="Move Right">
+          <span class="icon">▶</span>RIGHT
+        </button>
+      </div>
+      <div class="touch-cluster">
+        <button class="touch-pad" id="pad-action" type="button" aria-label="Grab or Pull">
+          <span class="icon">✋</span>GRAB
+        </button>
+        <button class="touch-pad" id="pad-jump" type="button" aria-label="Jump">
+          <span class="icon">▲</span>JUMP
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/core.js"></script>
+  <script src="js/canvas-utils.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/save.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
