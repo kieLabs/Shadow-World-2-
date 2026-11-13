@@ -259,7 +259,7 @@
         ctx.strokeStyle = '#030304';
         ctx.lineWidth = 6;
         ctx.lineCap = 'round';
-        const attackIK = SW.Math.solveTwoJointIK(sp.x - 20, sp.y + 10, sp.legTargetX, sp.legTargetY, 95, 110, true);
+        const attackIK = SW.Math.solveTwoJointIK(sp.x - 20, sp.y + 10, sp.legTargetX, sp.legTargetY, 115, 125, true);
         ctx.beginPath();
         ctx.moveTo(sp.x - 20, sp.y + 10);
         ctx.lineTo(attackIK.jx, attackIK.jy);

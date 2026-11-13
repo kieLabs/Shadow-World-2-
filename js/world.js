@@ -171,16 +171,24 @@
         this.platforms.push({ x: bx + 1240, y: groundY, w: 820, h: 240 });
 
         if (chNum <= 10) {
-          // ACT I: Giant Spider Boss & Draggable Bear Traps
+          // ACT I: Giant Spider Boss & 3 Draggable Bear Traps (1 per spider leg)
           this.bearTraps.push({
-            x: bx + 1410, y: groundY - 16, w: 36, h: 16,
+            x: bx + 1340, y: groundY - 16, w: 36, h: 16,
             snapped: false, pullable: true, minX: bx + 1260, maxX: bx + 1950
           });
           if (chNum >= 5) {
+            this.bearTraps.push({
+              x: bx + 1395, y: groundY - 16, w: 36, h: 16,
+              snapped: false, pullable: true, minX: bx + 1260, maxX: bx + 1950
+            });
+            this.bearTraps.push({
+              x: bx + 1450, y: groundY - 16, w: 36, h: 16,
+              snapped: false, pullable: true, minX: bx + 1260, maxX: bx + 1950
+            });
             this.spiders.push({
-              x: bx + 1680, y: groundY - 135,
-              baseX: bx + 1680, hp: 3, strikeTimer: 0, state: 'stalk',
-              legTargetX: bx + 1580, legTargetY: groundY
+              x: bx + 1660, y: groundY - 125,
+              baseX: bx + 1660, hp: 3, strikeTimer: 0, state: 'stalk',
+              legTargetX: bx + 1570, legTargetY: groundY - 40
             });
           } else {
             this.saws.push({
@@ -386,32 +394,45 @@
         }
       }
 
-      // Update Procedural IK Giant Spiders
+      // Update Procedural IK Giant Spiders (Prioritizes snapping open Bear Traps in strike zone!)
       for (let i = 0; i < this.spiders.length; i++) {
         const sp = this.spiders[i];
         if (sp.hp <= 0 || Math.abs(sp.x - px) > activeRange) continue;
-        const distToPlayer = px - sp.x;
-        if (Math.abs(distToPlayer) < 290) {
+        const distToPlayer = sp.x - px;
+        if (distToPlayer > -60 && distToPlayer < 320) {
           sp.strikeTimer += dt;
-          const cycle = sp.strikeTimer % 2.2;
-          if (cycle < 1.1) {
-            sp.legTargetX = px + player.w * 0.5;
-            sp.legTargetY = sp.y - 35;
-          } else if (cycle < 1.35) {
+          const cycle = sp.strikeTimer % 2.4;
+          const minStrikeX = sp.x - 185;
+          const maxStrikeX = sp.x - 45;
+
+          if (cycle < 1.25) {
+            // Telegraph raised foreleg over player (clamped to realistic IK reach)
+            sp.legTargetX = SW.Math.clamp(px + player.w * 0.5, minStrikeX, maxStrikeX);
+            sp.legTargetY = sp.y - 45;
+          } else if (cycle < 1.55) {
+            // Slam down onto ground
             sp.legTargetY = 420;
+            let hitTrap = false;
+            // First check if ANY open bear trap is inside the spider's strike reach
             for (let b = 0; b < this.bearTraps.length; b++) {
               const bt = this.bearTraps[b];
-              if (!bt.snapped && Math.abs(bt.x + bt.w * 0.5 - sp.legTargetX) < 32) {
+              const btCenter = bt.x + bt.w * 0.5;
+              if (!bt.snapped && btCenter >= minStrikeX - 18 && btCenter <= maxStrikeX + 18 && Math.abs(btCenter - sp.legTargetX) < 48) {
                 bt.snapped = true;
+                sp.legTargetX = btCenter;
                 sp.hp -= 1;
+                sp.x += 28; // Spider recoils backward on each severed limb
                 sp.strikeTimer = 0;
+                hitTrap = true;
                 if (SW.Audio && SW.Audio.playTrapSnap) SW.Audio.playTrapSnap();
                 if (this.toastCallback) {
-                  this.toastCallback(sp.hp > 0 ? 'SPIDER LIMB AMPUTATED (' + sp.hp + ' LEFT)' : 'GIANT SPIDER DEFEATED');
+                  this.toastCallback(sp.hp > 0 ? 'SPIDER LEG SEVERED! (' + sp.hp + ' LEGS LEFT)' : 'GIANT SPIDER DEFEATED! PATH CLEAR');
                 }
+                break;
               }
             }
-            if (!player.dead && sp.hp > 0 && Math.abs(player.x + player.w * 0.5 - sp.legTargetX) < 24 && player.y + player.h > 375) {
+            // Only kill player if no bear trap intercepted the strike
+            if (!hitTrap && !player.dead && sp.hp > 0 && Math.abs(player.x + player.w * 0.5 - sp.legTargetX) < 20 && player.y + player.h > 380) {
               player.kill('IMPALED BY THE GIANT SPIDER');
             }
           } else {
