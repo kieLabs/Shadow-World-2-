@@ -212,7 +212,7 @@
             minX: bx + 1720, maxX: bx + 2020, vx: -85, alive: true
           });
         } else if (chNum <= 30) {
-          // ACT III: Electrified HOTEL Sign (2.4s alternating cycle) + Giant Industrial Cogs
+          // ACT III: Electrified HOTEL Sign (2.4s alternating cycle) + Jumpable Industrial Cog
           const letters = ['H', 'O', 'T', 'E', 'L'];
           for (let l = 0; l < letters.length; l++) {
             const lx = bx + 1310 + l * 98;
@@ -223,8 +223,10 @@
               letter: letters[l], timer: (l % 2) * 2.4, cycle: 2.4, electrified: false, warning: false
             });
           }
+          // Step platform before cog + jumpable cog radius (r = 46 -> 92px tall, easily cleared by 101px jump)
+          this.platforms.push({ x: bx + 1810, y: groundY - 58, w: 58, h: 16 });
           this.cogs.push({
-            x: bx + 1900, y: groundY - 82, r: 78, angle: 0, speed: 1.45
+            x: bx + 1935, y: groundY - 46, r: 46, angle: 0, speed: 1.45
           });
         } else {
           // ACT IV: Gravity Inversion Corridor + Ceiling Track + Laser Turret
