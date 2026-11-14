@@ -223,10 +223,11 @@
               letter: letters[l], timer: (l % 2) * 2.4, cycle: 2.4, electrified: false, warning: false
             });
           }
-          // Step platform before cog + jumpable cog radius (r = 46 -> 92px tall, easily cleared by 101px jump)
-          this.platforms.push({ x: bx + 1810, y: groundY - 58, w: 58, h: 16 });
+          // Easy 2-step bridge over the Giant Cog + wider clearance so player passes smoothly every time
+          this.platforms.push({ x: bx + 1785, y: groundY - 56, w: 78, h: 16 });
+          this.platforms.push({ x: bx + 1880, y: groundY - 112, w: 125, h: 16 });
           this.cogs.push({
-            x: bx + 1935, y: groundY - 46, r: 46, angle: 0, speed: 1.45
+            x: bx + 1942, y: groundY - 40, r: 40, angle: 0, speed: 1.35
           });
         } else {
           // ACT IV: Gravity Inversion Corridor + Ceiling Track + Laser Turret
